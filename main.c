@@ -1,13 +1,16 @@
+#include <ctype.h>
 #include <curses.h>
+#include <dirent.h>
 #include <ncurses.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #define ROWS 9
 #define COLUMNS 10
 #define x_start 2
-#define y_start 2
+#define y_start 4
 #define sleep_duration 1
 #define MAX_LINE_LENGTH 256
 
@@ -15,7 +18,46 @@ int total_time[ROWS];
 int idle_time[ROWS];
 int memory[4];
 
-void get_running_process() {
+void getSystemVersion() {
+
+  FILE *file;
+  file = fopen("/proc/version", "r");
+  char c;
+  int count = 0;
+  while (!feof(file)) {
+    fscanf(file, "%c", &c);
+    if (c == '#')
+      break;
+    mvprintw(y_start-2, x_start + count, "%c", c);
+
+    count++;
+  }
+
+  fclose(file);
+}
+
+void initialize_processes() {
+  DIR *dir = opendir("/proc");
+  if (dir == NULL) {
+    perror("Failed to open /proc directory");
+  }
+
+  struct dirent *entry;
+  int pidCount = 0;
+
+  while ((entry = readdir(dir)) != NULL) {
+    if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
+
+      pidCount++;
+    }
+  }
+
+  closedir(dir);
+
+  printf("Number of PIDs in /proc: %d\n", pidCount);
+};
+
+void getRunningProcess() {
   FILE *file;
   file = fopen("/proc/*/stat", "r");
 
@@ -30,7 +72,7 @@ void get_running_process() {
   }
 }
 
-void get_memory_utilization() {
+void getMemoryUtilization() {
   FILE *file;
   file = fopen("/proc/meminfo", "r");
   char line[MAX_LINE_LENGTH];
@@ -60,8 +102,8 @@ void get_memory_utilization() {
   fclose(file);
   total_memory /= 1024;
   occupied_memory /= 1024;
-  total_swap /=1024;
-  free_swap /=1024;
+  total_swap /= 1024;
+  free_swap /= 1024;
 
   memory[0] = total_memory;
   memory[1] = occupied_memory;
@@ -69,7 +111,7 @@ void get_memory_utilization() {
   memory[3] = free_swap;
 }
 
-void get_cpu_utilization() {
+void getCpuUtilization() {
 
   int array[ROWS][COLUMNS];
 
@@ -135,8 +177,9 @@ void printCpuData() {
     prev_idle[i] = idle_time[i];
   }
   box(stdscr, 0, 0);
-  get_cpu_utilization();
-  get_memory_utilization();
+  getCpuUtilization();
+  getMemoryUtilization();
+  getSystemVersion();
 
   for (int i = 0; i < ROWS; i++) {
     int total_diff = total_time[i] - prev_total[i];
@@ -161,8 +204,9 @@ void printCpuData() {
   }
   mvprintw(y_start, COLS / 2, "%d /%d (%d%%)", memory[1], memory[0],
            (int)(((float)memory[1] / memory[0]) * 100));
-  mvprintw(y_start+1, COLS / 2, "%d /%d (%d%%)", memory[2]-memory[3], memory[2],
-           (int)(((memory[3]-memory[2]) / (float)memory[2]) * 100));
+  mvprintw(y_start + 1, COLS / 2, "%d /%d (%d%%)", memory[2] - memory[3],
+           memory[2],
+           (int)(((memory[3] - memory[2]) / (float)memory[2]) * 100));
 }
 
 void printMemoryData() {}
@@ -174,6 +218,7 @@ int main() {
   init_pair(1, COLOR_GREEN, COLOR_BLACK);
 
   while (2) {
+
     clear();
     sleep(sleep_duration);
     printCpuData();
