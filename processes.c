@@ -1,6 +1,5 @@
 #include "processes.h"
 
-
 struct processInfo {
   int pid;
   char user[50];
@@ -11,10 +10,7 @@ struct processInfo {
   int process_time;
 };
 
-
-
 struct processInfo process[1024];
-
 
 void populateProcessData(const char *filename, int i) {
   FILE *file = fopen(filename, "r");
@@ -108,7 +104,7 @@ int isNumber(const char *str) {
 }
 
 int compareStruct(const void *a, const void *b) {
-  return   ((struct processInfo *)b)->utime-((struct processInfo *)a)->utime;
+  return ((struct processInfo *)b)->utime - ((struct processInfo *)a)->utime;
 }
 
 void structSort() {

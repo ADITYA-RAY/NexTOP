@@ -10,14 +10,14 @@ void getMemoryUtilization() {
   long occupied_memory = 0;
   long total_swap = 0;
   long free_swap = 0;
+
   if (file == NULL) {
     printf("Error Opening file.\n");
   }
 
   while (!feof(file)) {
     while (fgets(line, sizeof(line), file)) {
-      // Search for lines containing "MemTotal" and "MemAvailable" to get total
-      // and available memory
+
       if (strstr(line, "MemTotal:") != NULL) {
         sscanf(line, "MemTotal: %ld kB", &total_memory);
       } else if (strstr(line, "MemAvailable:") != NULL) {
@@ -30,6 +30,7 @@ void getMemoryUtilization() {
     }
   }
   fclose(file);
+
   total_memory /= 1024;
   occupied_memory /= 1024;
   total_swap /= 1024;
@@ -41,10 +42,10 @@ void getMemoryUtilization() {
   memory[3] = free_swap;
 }
 
-
 void printMemoryData() {
-    getMemoryUtilization();
-      mvprintw(y_start, COLS / 2, "%d /%d (%d%%)", memory[1], memory[0],
+  getMemoryUtilization();
+  
+  mvprintw(y_start, COLS / 2, "%d /%d (%d%%)", memory[1], memory[0],
            (int)(((float)memory[1] / memory[0]) * 100));
   mvprintw(y_start + 1, COLS / 2, "%d /%d (%d%%)", memory[2] - memory[3],
            memory[2],

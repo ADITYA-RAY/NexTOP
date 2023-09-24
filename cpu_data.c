@@ -8,7 +8,6 @@ void getCpuUtilization() {
   int array[ROWS][COLUMNS];
 
   FILE *file;
-
   file = fopen("/proc/stat", "r");
 
   if (file == NULL) {

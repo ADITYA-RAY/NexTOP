@@ -1,4 +1,5 @@
 #include <curses.h>
+
 void initializeCurses() {
   initscr();
   cbreak();
