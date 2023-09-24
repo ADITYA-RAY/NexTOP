@@ -4,7 +4,7 @@ int total_time[ROWS];
 int idle_time[ROWS];
 
 void getCpuUtilization() {
-    
+
   int array[ROWS][COLUMNS];
 
   FILE *file;
@@ -72,11 +72,14 @@ void printCpuData() {
     double value = 100 * fraction;
 
     if (i < ROWS / 2 + 1) {
-      mvprintw(y_start + i, x_start, "%s", labels[i]);
-      attron(COLOR_PAIR(1));
-      printw(" %.2f", value);
-      printw("%% ");
-      attroff(COLOR_PAIR(1));
+      if (i != 0) {
+        mvprintw(y_start + i - 1, x_start, "%s", labels[i]);
+        attron(COLOR_PAIR(1));
+        printw(" %.2f", value);
+        printw("%% ");
+        attroff(COLOR_PAIR(1));
+      }
+
     } else {
       mvprintw(y_start + i - 5, COLS / 4, "%s", labels[i]);
       attron(COLOR_PAIR(1));
@@ -85,7 +88,6 @@ void printCpuData() {
       attroff(COLOR_PAIR(1));
     }
   }
-
 }
 
 void getSystemVersion() {
@@ -98,8 +100,9 @@ void getSystemVersion() {
     fscanf(file, "%c", &c);
     if (c == '#')
       break;
+    attron(A_BOLD);
     mvprintw(y_start - 2, x_start + count, "%c", c);
-
+    attroff(A_BOLD);
     count++;
   }
 

@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 #define x_start 2
-#define y_start 4
+#define y_start 6
 #define ROWS 9
 #define COLUMNS 10 
 

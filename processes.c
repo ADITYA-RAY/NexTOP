@@ -1,4 +1,5 @@
 #include "processes.h"
+#include <curses.h>
 
 struct processInfo {
   int pid;
@@ -78,19 +79,23 @@ void initializeProcesses() {
 void printProcessData() {
   char *headers[] = {"pid",   "user",    "state",       "utime",
                      "stime", "threads", "process time"};
-  int colSpaces[] = {0, 10, 50, 60, 80, 100, 110};
+  int colSpaces[] = {0, 10, 35, 50, 65, 80, 95};
+  int process_y = 13;
   for (int i = 0; i < 7; i++) {
-    mvprintw(12, x_start + colSpaces[i], "%s", headers[i]);
+    attron(COLOR_PAIR(1));
+    mvprintw(process_y, x_start + colSpaces[i], "%s", headers[i]);
+    attroff(COLOR_PAIR(1));
+
   }
 
-  for (int i = 0; i < 200; i++) {
-    mvprintw(14 + i, x_start, "%d", process[i].pid);
-    mvprintw(14 + i, x_start + colSpaces[1], "%s", process[i].user);
-    mvprintw(14 + i, x_start + colSpaces[2], "%s", process[i].state);
-    mvprintw(14 + i, x_start + colSpaces[3], "%d", process[i].utime);
-    mvprintw(14 + i, x_start + colSpaces[4], "%d", process[i].stime);
-    mvprintw(14 + i, x_start + colSpaces[5], "%d", process[i].num_threads);
-    mvprintw(14 + i, x_start + colSpaces[6], "%d", process[i].process_time);
+  for (int i = 0; i < 26; i++) {
+    mvprintw(process_y + 2 + i, x_start, "%d", process[i].pid);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[1], "%s", process[i].user);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[2], "%s", process[i].state);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[3], "%d", process[i].utime);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[4], "%d", process[i].stime);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[5], "%d", process[i].num_threads);
+    mvprintw(process_y + 2 + i, x_start + colSpaces[6], "%d", process[i].process_time);
   }
 }
 

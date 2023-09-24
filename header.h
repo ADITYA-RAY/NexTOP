@@ -12,9 +12,6 @@
 #include "memory_data.c"
 #include "curses.c"
 
-
-#define x_start 2
-#define y_start 4
 #define sleep_duration 1
 
 int compareStruct(const void *a, const void *b);

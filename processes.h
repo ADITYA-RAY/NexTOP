@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 #define x_start 2
-#define y_start 4
+#define y_start 6
 
 void populateProcessData(const char *filename, int i);
 void initializeProcesses();

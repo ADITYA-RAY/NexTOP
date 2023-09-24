@@ -44,10 +44,16 @@ void getMemoryUtilization() {
 
 void printMemoryData() {
   getMemoryUtilization();
-  
-  mvprintw(y_start, COLS / 2, "%d /%d (%d%%)", memory[1], memory[0],
+  attron(COLOR_PAIR(1));
+  mvprintw(y_start, COLS / 2, "%s", "Mem Used /Mem Available");
+  attroff(COLOR_PAIR(1));
+  mvprintw(y_start + 1, COLS / 2, "%d /%d (%d%%)", memory[1], memory[0],
            (int)(((float)memory[1] / memory[0]) * 100));
-  mvprintw(y_start + 1, COLS / 2, "%d /%d (%d%%)", memory[2] - memory[3],
+  getMemoryUtilization();
+  attron(COLOR_PAIR(1));
+  mvprintw(y_start+2, COLS / 2, "%s", "Swap Used /Swap Available");
+  attroff(COLOR_PAIR(1));
+  mvprintw(y_start + 3, COLS / 2, "%d /%d (%d%%)", memory[2] - memory[3],
            memory[2],
            (int)(((memory[3] - memory[2]) / (float)memory[2]) * 100));
 }
